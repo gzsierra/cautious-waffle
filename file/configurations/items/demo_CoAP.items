@@ -1,0 +1,2 @@
+Number mqttsw1			"temp [%.1f °C]" {mqtt="<[openhab:paho/temperature:state:default]"}
+Number coapsw1			"temp [%.1f °C]" (Temperature) {exec="<[/usr/bin/pyGet:60000:REGEX((.*?))]"}

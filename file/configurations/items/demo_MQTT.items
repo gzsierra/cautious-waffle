@@ -1,0 +1,1 @@
+Number mqttsw1			"temp [%.1f °C]" {mqtt="<[openhab:paho/temperature:state:default]"}

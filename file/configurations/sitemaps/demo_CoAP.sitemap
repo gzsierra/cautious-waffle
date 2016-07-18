@@ -1,0 +1,9 @@
+sitemap demo label="Main Menu"
+{
+        Frame label="MQTT" {
+		      Text item=mqttsw1
+        }
+        Frame label="CoAP" {
+		      Text item=coapsw1 
+        }
+}
