@@ -2,47 +2,65 @@
 
 # Simple script to install OpenHAB on Ubuntu
 
+# Make sure only root can run our script
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
 # JAVA setup
-sudo apt-add-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
+apt-add-repository ppa:webupd8team/java
+apt update
+apt install oracle-java8-installer
 
 # MySQL setup
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password your_password'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password your_password'
-sudo apt-get -y install mysql-server
+debconf-set-selections <<< 'mysql-server mysql-server/root_password password openhab'
+debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password openhab'
+apt-get -y install mysql-server
 
-mysql -u root -p root_password password your_password -e "CREATE DATABASE OpenHAB"
-mysql -u root -p root_password password your_password -e "CREATE USER 'openhab'@'localhost' IDENTIFIED BY 'yourpassword'"
-mysql -u root -p root_password password your_password -e "GRANT ALL PRIVILEGES ON OpenHAB.* TO 'openhab'@'localhost'"
+mysql -u root --password='openhab' -e "CREATE DATABASE OpenHAB"
+mysql -u root --password='openhab' -e "CREATE USER 'openhab'@'localhost' IDENTIFIED BY 'yourpassword'"
+mysql -u root --password='openhab' -e "GRANT ALL PRIVILEGES ON OpenHAB.* TO 'openhab'@'localhost'"
 
 # Mosquitto setup
-sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
-sudo apt-get update
-sudo apt-get install mosquitto
+apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
+apt update
+apt install mosquitto
 
-sudo echo 'allow_anonymous = true' >> /etc/mosquitto/mosquitto.conf
-sudo /etc/init.d/mosquitto restart
+echo 'allow_anonymous = true' >> /etc/mosquitto/mosquitto.conf
+/etc/init.d/mosquitto restart
+
+# CoAP setup
+# apt install git
+git clone https://github.com/gzsierra/pycoap/ /opt/pycoap
+ln -s /opt/pycoap/pyServer.py /usr/bin/coapServer
+ln -s /opt/pycoap/pyGet.py /usr/bin/pyGet
+
+## CoAP Server Setup as a Service
+update-rc.d coapServer defaults
+systemctl enable coapServer
 
 # OpenHAB setup
-wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' | sudo apt-key add -
-echo "deb http://dl.bintray.com/openhab/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update
-sudo apt-get install openhab-runtime
+wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -
+echo "deb http://dl.bintray.com/openhab/apt-repo stable main" |  tee /etc/apt/sources.list.d/openhab.list
+apt update
+apt install openhab-runtime
 
-sudo apt-get install openhab-addon-binding-astro \
-                     openhab-addon-binding-exec \
-                     openhab-addon-binding-http \
-                     openhab-addon-binding-mqtt \
-                     openhab-addon-binding-mqttitude \
-                     openhab-addon-binding-networkhealth \
-                     openhab-addon-binding-wol \
-                     openhab-addon-binding-zwave \
-                     openhab-addon-persistence-mysql
+apt install openhab-addon-binding-astro \
+            openhab-addon-binding-exec \
+            openhab-addon-binding-http \
+            openhab-addon-binding-mqtt \
+            openhab-addon-binding-mqttitude \
+            openhab-addon-binding-networkhealth \
+            openhab-addon-binding-wol \
+            openhab-addon-binding-zwave \
+            openhab-addon-persistence-mysql
 
-sudo cp file/configurations/openhab.cfg /etc/openhab/configurations/openhab.cfg
-sudo cp file/configurations/items/demo.items /etc/openhab/configurations/items/demo.items
-sudo cp file/configurations/sitemaps/demo.sitemap /etc/openhab/configurations/sitemaps/demo.sitemap
+# Custom config file
+cp file/coapServer /etc/init.d/coapServer
+cp file/configurations/openhab.cfg /etc/openhab/configurations/openhab.cfg
+cp file/configurations/items/demo.items /etc/openhab/configurations/items/demo.items
+cp file/configurations/sitemaps/demo.sitemap /etc/openhab/configurations/sitemaps/demo.sitemap
 
 # Starting services
-sudo systemctl enable openhab
+systemctl enable openhab
