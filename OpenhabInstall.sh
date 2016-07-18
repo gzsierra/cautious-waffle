@@ -4,17 +4,17 @@
 
 # Make sure only root can run our script
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
+   printf "This script must be run as root" 1>&2
    exit 1
 fi
 
-echo "\n######################\n## Java Setup \n######################\n"
+printf "\n######################\n## Java Setup \n######################\n"
 # JAVA setup
 apt-add-repository ppa:webupd8team/java
 apt update
 apt install -y oracle-java8-installer
 
-echo "\n######################\n## MySQL Setup \n######################\n"
+printf "\n######################\n## MySQL Setup \n######################\n"
 # MySQL setup
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password openhab'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password openhab'
@@ -24,7 +24,7 @@ mysql -u root --password='openhab' -e "CREATE DATABASE OpenHAB"
 mysql -u root --password='openhab' -e "CREATE USER 'openhab'@'localhost' IDENTIFIED BY 'yourpassword'"
 mysql -u root --password='openhab' -e "GRANT ALL PRIVILEGES ON OpenHAB.* TO 'openhab'@'localhost'"
 
-echo "\n######################\n## Mosquitto Setup \n######################\n"
+printf "\n######################\n## Mosquitto Setup \n######################\n"
 # Mosquitto setup
 apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
 apt update
@@ -33,7 +33,7 @@ apt install -y mosquitto
 echo 'allow_anonymous = true' >> /etc/mosquitto/mosquitto.conf
 /etc/init.d/mosquitto restart
 
-echo "\n######################\n## CoAP Setup \n######################\n"
+printf "\n######################\n## CoAP Setup \n######################\n"
 # CoAP setup
 apt install python3-pip
 pip3 install aiocoap
@@ -46,7 +46,7 @@ ln -s /opt/pycoap/pyGet.py /usr/bin/pyGet
 systemctl enable coapServer
 service coapServer start
 
-echo "\n######################\n## OpenHAB Setup \n######################\n"
+printf "\n######################\n## OpenHAB Setup \n######################\n"
 # OpenHAB setup
 wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -
 echo "deb http://dl.bintray.com/openhab/apt-repo stable main" |  tee /etc/apt/sources.list.d/openhab.list
@@ -71,3 +71,7 @@ cp file/configurations/sitemaps/demo.sitemap /etc/openhab/configurations/sitemap
 
 # Starting services
 systemctl enable openhab
+service openhab start
+
+systemctl enable coapServer
+service coapServer start
