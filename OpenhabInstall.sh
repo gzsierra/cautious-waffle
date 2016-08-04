@@ -46,6 +46,10 @@ ln -s /opt/pycoap/pyGet.py /usr/bin/pyGet
 systemctl enable coapServer
 service coapServer start
 
+printf "\n######################\n## Hue Setup \n######################\n"
+# HUE setup
+apt install openhab-addon-binding-hue
+
 printf "\n######################\n## OpenHAB Setup \n######################\n"
 # OpenHAB setup
 wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -

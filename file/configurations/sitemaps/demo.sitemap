@@ -4,6 +4,15 @@ sitemap demo label="Main Menu"
 		      Text item=mqttsw1
         }
         Frame label="CoAP" {
-		      Text item=coapsw1 
+		      Text item=coapsw1
+        }
+        Frame label="Philips Hue" {
+          Switch item=Light_S_1  label="Switch 1"
+          Switch item=Light_S_2  label="Switch 2"
+          Switch item=Light_S_2  label="Switch 3"
+
+          Colorpicker  item=Light_C_1  label="Color 1"
+          Colorpicker  item=Light_C_2  label="Color 2"
+          Colorpicker  item=Light_C_3  label="Color 3"
         }
 }

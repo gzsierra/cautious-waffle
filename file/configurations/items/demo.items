@@ -1,2 +1,10 @@
 Number mqttsw1			"temp [%.1f °C]" {mqtt="<[openhab:paho/temperature:state:default]"}
 Number coapsw1			"temp [%.1f °C]" (Temperature) {exec="<[/usr/bin/pyGet:60000:REGEX((.*?))]"}
+
+Switch  Light_S_1   {hue="1"}
+Switch  Light_S_2   {hue="2"}
+Switch  Light_S_3   {hue="3"}
+
+Color  Light_C_1    {hue="1"}
+Color  Light_C_2    {hue="2"}
+Color  Light_C_3    {hue="3"}
