@@ -24,6 +24,11 @@ sudo service coapServer start
 sudo service openhab start
 ```
 
+To start Philips Hue emulator (install script will automaticly launch it):
+```
+java -jar HueEmulator-v0.7.jar
+```
+
 # Custom config
 For more details on how to use MQTT or CoAP Server please follow the link below
 * [MQTT](https://github.com/gzsierra/pytt)
@@ -36,7 +41,7 @@ In that folder you will found [CoAP Service](../master/file/coapServer), [defaul
 
 For the usage of Hue emulator please follow [here](https://github.com/openhab/openhab/wiki/Hue-Binding)
 In the [config file](../master/file/configurations/openhab.cfg), there is a part that you have to edit for YOUR CASE.
-The lines that you have to edit are at line 120 and 126. 
+The lines that you have to edit are at line 120 and 126.
 
 The default Openhab config file has been shorted for easy reading
 

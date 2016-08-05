@@ -79,3 +79,5 @@ service openhab start
 
 systemctl enable coapServer
 service coapServer start
+
+java -jar java -jar HueEmulator-v0.7.jar
