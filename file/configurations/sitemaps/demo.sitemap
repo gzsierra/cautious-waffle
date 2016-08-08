@@ -2,6 +2,9 @@ sitemap demo label="Main Menu"
 {
         Frame label="MQTT" {
 		      Text item=mqttsw1
+          Text item=mqttsw_CPU
+          Text item=mqttsw_RAM
+
         }
         Frame label="CoAP" {
 		      Text item=coapsw1

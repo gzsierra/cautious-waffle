@@ -46,10 +46,6 @@ ln -s /opt/pycoap/pyGet.py /usr/bin/pyGet
 systemctl enable coapServer
 service coapServer start
 
-printf "\n######################\n## Hue Setup \n######################\n"
-# HUE setup
-apt install openhab-addon-binding-hue
-
 printf "\n######################\n## OpenHAB Setup \n######################\n"
 # OpenHAB setup
 wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -
@@ -65,7 +61,8 @@ apt install -y openhab-addon-binding-astro \
                openhab-addon-binding-networkhealth \
                openhab-addon-binding-wol \
                openhab-addon-binding-zwave \
-               openhab-addon-persistence-mysql
+               openhab-addon-persistence-mysql \
+               openhab-addon-binding-hue
 
 # Custom config file
 cp file/coapServer /etc/init.d/coapServer
@@ -80,4 +77,15 @@ service openhab start
 systemctl enable coapServer
 service coapServer start
 
-java -jar java -jar HueEmulator-v0.7.jar
+printf "\n######################\n## Advanced CoAP \n######################\n"
+# CoAP Advanced configurations
+git clone https://github.com/gzsierra/musical-enigma.git /opt/musical-enigma
+
+pip3 install psutil
+pip3 install paho-mqtt
+
+# Run advanced client
+/opt/musical-enigma/pyClient.py &
+
+# Run HUE emulator
+java -jar java -jar HueEmulator-v0.7.jar &
