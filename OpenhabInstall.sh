@@ -8,10 +8,17 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+printf "\n######################\n## Add Miss Repos \n######################\n"
+apt-add-repository -y ppa:webupd8team/java
+apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+
+wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -
+echo "deb http://dl.bintray.com/openhab/apt-repo stable main" |  tee /etc/apt/sources.list.d/openhab.list
+
+apt update
+
 printf "\n######################\n## Java Setup \n######################\n"
 # JAVA setup
-apt-add-repository ppa:webupd8team/java
-apt update
 apt install -y oracle-java8-installer
 
 printf "\n######################\n## MySQL Setup \n######################\n"
@@ -26,12 +33,10 @@ mysql -u root --password='openhab' -e "GRANT ALL PRIVILEGES ON OpenHAB.* TO 'ope
 
 printf "\n######################\n## Mosquitto Setup \n######################\n"
 # Mosquitto setup
-apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
-apt update
 apt install -y mosquitto
 
 echo 'allow_anonymous = true' >> /etc/mosquitto/mosquitto.conf
-/etc/init.d/mosquitto restart
+/etc/init.d/mosquitto restart &
 
 printf "\n######################\n## CoAP Setup \n######################\n"
 # CoAP setup
@@ -43,14 +48,11 @@ ln -s /opt/pycoap/pyServer.py /usr/bin/coapServer
 ln -s /opt/pycoap/pyGet.py /usr/bin/pyGet
 
 ## CoAP Server Setup as a Service
-systemctl enable coapServer
-service coapServer start
+systemctl enable coapServer &
+service coapServer start &
 
 printf "\n######################\n## OpenHAB Setup \n######################\n"
 # OpenHAB setup
-wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' |  apt-key add -
-echo "deb http://dl.bintray.com/openhab/apt-repo stable main" |  tee /etc/apt/sources.list.d/openhab.list
-apt update
 apt install -y openhab-runtime
 
 apt install -y openhab-addon-binding-astro \
@@ -71,11 +73,11 @@ cp file/configurations/items/demo.items /etc/openhab/configurations/items/demo.i
 cp file/configurations/sitemaps/demo.sitemap /etc/openhab/configurations/sitemaps/demo.sitemap
 
 # Starting services
-systemctl enable openhab
-service openhab start
+systemctl enable openhab &
+service openhab start &
 
-systemctl enable coapServer
-service coapServer start
+systemctl enable coapServer &
+service coapServer start &
 
 printf "\n######################\n## Advanced CoAP \n######################\n"
 # CoAP Advanced configurations

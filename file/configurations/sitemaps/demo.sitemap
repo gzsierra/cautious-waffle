@@ -12,7 +12,7 @@ sitemap demo label="Main Menu"
         Frame label="Philips Hue" {
           Switch item=Light_S_1  label="Switch 1"
           Switch item=Light_S_2  label="Switch 2"
-          Switch item=Light_S_2  label="Switch 3"
+          Switch item=Light_S_3  label="Switch 3"
 
           Colorpicker  item=Light_C_1  label="Color 1"
           Colorpicker  item=Light_C_2  label="Color 2"
