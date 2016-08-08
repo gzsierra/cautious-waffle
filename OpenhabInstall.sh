@@ -35,7 +35,7 @@ echo 'allow_anonymous = true' >> /etc/mosquitto/mosquitto.conf
 
 printf "\n######################\n## CoAP Setup \n######################\n"
 # CoAP setup
-apt install python3-pip
+apt install -y python3-pip
 pip3 install aiocoap
 
 git clone https://github.com/gzsierra/pycoap/ /opt/pycoap
@@ -88,4 +88,4 @@ pip3 install paho-mqtt
 /opt/musical-enigma/pyClient.py &
 
 # Run HUE emulator
-java -jar java -jar HueEmulator-v0.7.jar &
+java -jar HueEmulator-v0.7.jar &
